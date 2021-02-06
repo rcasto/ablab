@@ -1,0 +1,14 @@
+{
+  "name": "experisimple",
+  "version": "1.0.0",
+  "description": "The goal of this project is to be a simple library for enabling experimentation. You choose the location to host the experimentation config and supply a unique id (optional) to use for bucketing.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Richie Casto (https://github.com/rcasto)",
+  "license": "MIT",
+  "dependencies": {
+    "murmurhash": "2.0.0"
+  }
+}
