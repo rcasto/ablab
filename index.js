@@ -4,6 +4,7 @@ import { sampleExperimentConfig } from './sample_experiment_config.js';
 
 const num_buckets = 10000;
 const murmur_constant_seed = 1;
+const traffic_multiplier = 100;
 
 function validateExperimentConfig(experimentConfig) {
     const experimentNames = Object.keys(experimentConfig);
@@ -55,49 +56,64 @@ function validateExperimentSettings(experimentName, experimentSettings) {
 }
 
 export function createExperimenter(experimentConfig) {
+    const invalidReasons = validateExperimentConfig(experimentConfig);
+
+    if (invalidReasons.length > 0) {
+        console.error(invalidReasons);
+        return null;
+    }
+
     return {
         getVariationForExperiment: (experimentName, uniqueId) => getVariationForExperiment(experimentConfig, experimentName, uniqueId),
     };
 }
 
 export function getVariationForExperiment(experimentConfig, experimentName, uniqueId) {
-    const uniqueIdHash = murmurhash(uniqueId, murmur_constant_seed);
-    const bucketIndex = uniqueIdHash % num_buckets;
-    
-    const percentage = 50;
-    const maxControlIndex = percentage * 100 - 1;
+    const experimentSettings = experimentConfig[experimentName];
 
-    if (bucketIndex > maxControlIndex) {
-        numTreatment++;
-    } else {
-        numControl++;
+    if (!experimentSettings.active) {
+        console.warn(`${experimentName} is not currently on or active`);
+        return null;
     }
+
+    const uniqueIdHash = murmurhash(uniqueId, murmur_constant_seed);
+    let bucketIndex = uniqueIdHash % num_buckets;
+
+    const experimentVariations = experimentSettings.variations;
+    let assignedExperimentVariation = null;
+
+    Object.keys(experimentVariations)
+        .some(experimentVariation => {
+            const experimentVariationTraffic = experimentVariations[experimentVariation];
+            const maxExperimentBucketIndex = experimentVariationTraffic * traffic_multiplier;
+
+            if (bucketIndex < maxExperimentBucketIndex) {
+                assignedExperimentVariation = experimentVariation;
+                return true;
+            }
+
+            bucketIndex -= maxExperimentBucketIndex;
+
+            return false;
+        });
+
+    return assignedExperimentVariation;
 }
 
 export function getVariationsForUniqueId(uniqueId) {
 
 }
 
-export function readConfig() {
-
-}
-
-export function fetchConfig() {
-
-}
-
 // Testing out murmurhash bucket distribution
-// const numCycles = 10000;
-// var numTreatment = 0;
-// var numControl = 0;
+const numCycles = 10000;
+const variationCounts = {};
+const experimenter = createExperimenter(sampleExperimentConfig);
 
-// for (let i = 0; i < numCycles; i++) {
-//     const uniqueId = uuidv4();
-//     getVariationForExperiment('test-experiment', uniqueId);
-// }
+for (let i = 0; i < numCycles; i++) {
+    const uniqueId = uuidv4();
+    const variation = experimenter.getVariationForExperiment('multiple-variations', uniqueId);
+    
+    variationCounts[variation] = (variationCounts[variation] || 0) + 1;
+}
 
-// console.log(`Treatment: ${numTreatment}`);
-// console.log(`Control: ${numControl}`);
-
-const invalidReasons = validateExperimentConfig(sampleExperimentConfig);
-console.log(invalidReasons);
+console.log(variationCounts);

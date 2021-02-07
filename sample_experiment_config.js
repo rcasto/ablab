@@ -24,5 +24,13 @@ export const sampleExperimentConfig = {
             "control": 5,
             "treatment": 5
         }
+    },
+    "multiple-variations": {
+        "active": true,
+        "variations": {
+            "A": 33.33,
+            "B": 33.33,
+            "C": 33.34
+        }
     }
 };
