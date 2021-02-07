@@ -1,21 +1,8 @@
 import murmurhash from 'murmurhash';
-import { v4 as uuidv4 } from 'uuid';
-import { sampleExperimentConfig } from './sample_experiment_config.js';
 
 const num_buckets = 10000;
 const murmur_constant_seed = 1;
 const traffic_multiplier = 100;
-
-function validateExperimentConfig(experimentConfig) {
-    const experimentNames = Object.keys(experimentConfig);
-    const invalidReasons = [];
-    experimentNames.forEach(experimentName => {
-        const experimentSettings = experimentConfig[experimentName];
-        const experimentSettingsInvalidReasons = validateExperimentSettings(experimentName, experimentSettings);
-        invalidReasons.push.apply(invalidReasons, experimentSettingsInvalidReasons);
-    });
-    return invalidReasons;
-}
 
 function validateExperimentSettings(experimentName, experimentSettings) {
     const invalidReasons = [];
@@ -52,6 +39,17 @@ function validateExperimentSettings(experimentName, experimentSettings) {
         }
     }
 
+    return invalidReasons;
+}
+
+export function validateExperimentConfig(experimentConfig) {
+    const experimentNames = Object.keys(experimentConfig);
+    const invalidReasons = [];
+    experimentNames.forEach(experimentName => {
+        const experimentSettings = experimentConfig[experimentName];
+        const experimentSettingsInvalidReasons = validateExperimentSettings(experimentName, experimentSettings);
+        invalidReasons.push.apply(invalidReasons, experimentSettingsInvalidReasons);
+    });
     return invalidReasons;
 }
 
@@ -103,17 +101,3 @@ export function getVariationForExperiment(experimentConfig, experimentName, uniq
 export function getVariationsForUniqueId(uniqueId) {
 
 }
-
-// Testing out murmurhash bucket distribution
-const numCycles = 10000;
-const variationCounts = {};
-const experimenter = createExperimenter(sampleExperimentConfig);
-
-for (let i = 0; i < numCycles; i++) {
-    const uniqueId = uuidv4();
-    const variation = experimenter.getVariationForExperiment('multiple-variations', uniqueId);
-    
-    variationCounts[variation] = (variationCounts[variation] || 0) + 1;
-}
-
-console.log(variationCounts);
