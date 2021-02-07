@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
   "license": "MIT",
@@ -13,6 +13,7 @@
     "murmurhash": "2.0.0"
   },
   "devDependencies": {
+    "jest": "26.6.3",
     "uuid": "8.3.2"
   }
 }
