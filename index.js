@@ -7,23 +7,20 @@ const murmur_constant_seed = 1;
 
 function validateExperimentConfig(experimentConfig) {
     const experimentNames = Object.keys(experimentConfig);
+    const invalidReasons = [];
     experimentNames.forEach(experimentName => {
         const experimentSettings = experimentConfig[experimentName];
-        validateExperimentSettings(experimentName, experimentSettings);
+        const experimentSettingsInvalidReasons = validateExperimentSettings(experimentName, experimentSettings);
+        invalidReasons.push.apply(invalidReasons, experimentSettingsInvalidReasons);
     });
+    return invalidReasons;
 }
 
 function validateExperimentSettings(experimentName, experimentSettings) {
     const invalidReasons = [];
 
-    const trafficAllocation = experimentSettings['traffic_allocation'] || 100;
-    const activeStatus = experimentSettings['active'];
-
-    if (typeof trafficAllocation !== 'number' ||
-        trafficAllocation < 0 ||
-        trafficAllocation > 100) {
-        invalidReasons.push(`traffic_allocation for ${experimentName} is invalid, must be a number 0 <= x <= 100: ${trafficAllocation}`);
-    }
+    const activeStatus = typeof experimentSettings['active'] === 'undefined' ?
+        false : experimentSettings['active'];
 
     if (typeof activeStatus !== 'boolean') {
         invalidReasons.push(`active for ${experimentName} is not a boolean value, this is not necessarily an error, but it will be interpreted as a boolean: ${activeStatus}`);
@@ -31,15 +28,30 @@ function validateExperimentSettings(experimentName, experimentSettings) {
 
     const variations = experimentSettings['variations'];
 
-    // whoops variations is an object
-    // if (!Array.isArray(variations)) {
-    //     invalidReasons.push(`variations for ${experimentName} is not an array: ${variations}`);
-    // } else {
-    //     let totalVariationTraffic = 0;
-    //     variations.forEach(variation => {
+    if (variations && typeof variations !== 'object') {
+        invalidReasons.push(`variations for ${experimentName} is not an object: ${variations}`);
+    } else {
+        const variationNames = Object.keys(variations);
+        let totalVariationTraffic = 0;
 
-    //     });
-    // }
+        variationNames.forEach(variationName => {
+            const variationTraffic = variations[variationName];
+
+            if (typeof variationTraffic !== 'number') {
+                invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is not a number: ${variationTraffic}`);
+            } else if (variationTraffic < 0) {
+                invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is negative, which is invalid: ${variationTraffic}`);
+            } else {
+                totalVariationTraffic += variationTraffic;
+            }
+        });
+
+        if (totalVariationTraffic > 100) {
+            invalidReasons.push(`The total traffic allocated for all variations of ${experimentName} is greater than the max of 100: ${totalVariationTraffic}`);
+        }
+    }
+
+    return invalidReasons;
 }
 
 export function createExperimenter(experimentConfig) {
@@ -75,14 +87,17 @@ export function fetchConfig() {
 }
 
 // Testing out murmurhash bucket distribution
-const numCycles = 10000;
-var numTreatment = 0;
-var numControl = 0;
+// const numCycles = 10000;
+// var numTreatment = 0;
+// var numControl = 0;
 
-for (let i = 0; i < numCycles; i++) {
-    const uniqueId = uuidv4();
-    getVariationForExperiment('test-experiment', uniqueId);
-}
+// for (let i = 0; i < numCycles; i++) {
+//     const uniqueId = uuidv4();
+//     getVariationForExperiment('test-experiment', uniqueId);
+// }
 
-console.log(`Treatment: ${numTreatment}`);
-console.log(`Control: ${numControl}`);
+// console.log(`Treatment: ${numTreatment}`);
+// console.log(`Control: ${numControl}`);
+
+const invalidReasons = validateExperimentConfig(sampleExperimentConfig);
+console.log(invalidReasons);
