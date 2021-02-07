@@ -8,7 +8,7 @@ const numCyclesPerSimulation = 100000;
 let averageTimeToCompleteInMs = 0;
 
 for (let i = 0; i < numSimulations; i++) {
-    const { totalTimeInMs } = stopwatch(() => {
+    const { totalTimeInMs, result: variationCounts } = stopwatch(() => {
 
         const variationCounts = {};
         const experimenter = createExperimenter(sampleExperimentConfig);
@@ -20,10 +20,12 @@ for (let i = 0; i < numSimulations; i++) {
             variationCounts[variation] = (variationCounts[variation] || 0) + 1;
         }
 
-        console.log(variationCounts);
+        return variationCounts;
     });
 
     averageTimeToCompleteInMs = (averageTimeToCompleteInMs * i + totalTimeInMs) / (i + 1);
+
+    console.log(variationCounts);
 }
 
 console.log(`Average time to complete (ms): ${averageTimeToCompleteInMs}`);
