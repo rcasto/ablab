@@ -4,6 +4,28 @@ const num_buckets = 10000;
 const murmur_constant_seed = 1;
 const traffic_multiplier = 100;
 
+function validateVariationSettings(experimentName, variationName, variationSettings) {
+    const invalidReasons = [];
+    let variationTraffic = 0;
+
+    if (typeof variationSettings === 'number') {
+        variationTraffic = variationSettings;
+    } else if (variationSettings && typeof variationSettings === 'object') {
+        if (typeof variationSettings['traffic'] === 'number') {
+            variationTraffic = variationSettings['traffic'];
+        } else {
+            invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is negative, which is invalid: ${variationTraffic}`);
+        }
+    } else {
+        invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is not a number: ${variationTraffic}`);
+    }
+
+    return {
+        variationTraffic,
+        invalidReasons,
+    };
+}
+
 function validateExperimentSettings(experimentName, experimentSettings) {
     const invalidReasons = [];
 
@@ -23,15 +45,11 @@ function validateExperimentSettings(experimentName, experimentSettings) {
         let totalVariationTraffic = 0;
 
         variationNames.forEach(variationName => {
-            const variationTraffic = variations[variationName];
-
-            if (typeof variationTraffic !== 'number') {
-                invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is not a number: ${variationTraffic}`);
-            } else if (variationTraffic < 0) {
-                invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is negative, which is invalid: ${variationTraffic}`);
-            } else {
-                totalVariationTraffic += variationTraffic;
-            }
+            const variationSettings = variations[variationName];
+            const { variationTraffic, invalidReasons: invalidVariationReasons } = validateVariationSettings(experimentName, variationName, variationSettings);
+            
+            totalVariationTraffic += variationTraffic;
+            invalidReasons.push.apply(invalidReasons, invalidVariationReasons);
         });
 
         if (totalVariationTraffic > 100) {
@@ -42,31 +60,7 @@ function validateExperimentSettings(experimentName, experimentSettings) {
     return invalidReasons;
 }
 
-export function validateExperimentConfig(experimentConfig) {
-    const experimentNames = Object.keys(experimentConfig);
-    const invalidReasons = [];
-    experimentNames.forEach(experimentName => {
-        const experimentSettings = experimentConfig[experimentName];
-        const experimentSettingsInvalidReasons = validateExperimentSettings(experimentName, experimentSettings);
-        invalidReasons.push.apply(invalidReasons, experimentSettingsInvalidReasons);
-    });
-    return invalidReasons;
-}
-
-export function createExperimenter(experimentConfig) {
-    const invalidReasons = validateExperimentConfig(experimentConfig);
-
-    if (invalidReasons.length > 0) {
-        console.error(invalidReasons);
-        return null;
-    }
-
-    return {
-        getVariationForExperiment: (experimentName, uniqueId) => getVariationForExperiment(experimentConfig, experimentName, uniqueId),
-    };
-}
-
-export function getVariationForExperiment(experimentConfig, experimentName, uniqueId) {
+function getVariationForExperiment(experimentConfig, experimentName, uniqueId) {
     const experimentSettings = experimentConfig[experimentName];
 
     if (!experimentSettings.active) {
@@ -98,6 +92,30 @@ export function getVariationForExperiment(experimentConfig, experimentName, uniq
     return assignedExperimentVariation;
 }
 
-export function getVariationsForUniqueId(uniqueId) {
+function getVariationsForUniqueId(uniqueId) {
 
+}
+
+export function validateExperimentConfig(experimentConfig) {
+    const experimentNames = Object.keys(experimentConfig);
+    const invalidReasons = [];
+    experimentNames.forEach(experimentName => {
+        const experimentSettings = experimentConfig[experimentName];
+        const experimentSettingsInvalidReasons = validateExperimentSettings(experimentName, experimentSettings);
+        invalidReasons.push.apply(invalidReasons, experimentSettingsInvalidReasons);
+    });
+    return invalidReasons;
+}
+
+export function createExperimenter(experimentConfig) {
+    const invalidReasons = validateExperimentConfig(experimentConfig);
+
+    if (invalidReasons.length > 0) {
+        console.error(invalidReasons);
+        return null;
+    }
+
+    return {
+        getVariationForExperiment: (experimentName, uniqueId) => getVariationForExperiment(experimentConfig, experimentName, uniqueId),
+    };
 }
