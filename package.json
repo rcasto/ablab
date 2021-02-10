@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "rollup --config rollup.config.js",
     "test": "jest"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
@@ -17,6 +18,7 @@
     "@babel/preset-env": "7.12.13",
     "babel-jest": "26.6.3",
     "jest": "26.6.3",
+    "rollup": "2.38.5",
     "uuid": "8.3.2"
   }
 }
