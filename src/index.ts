@@ -20,7 +20,7 @@ interface ExperimentSettings {
     };
 }
 
-interface ExperimentConfig {
+export interface ExperimentConfig {
     [experimentName: string]: ExperimentSettings;
 }
 
