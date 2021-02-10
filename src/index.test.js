@@ -1,4 +1,4 @@
-import { validateExperimentConfig } from './index.js';
+import { validateExperimentConfig } from './index';
 
 describe('validateExperimentConfig tests', () => {
 
