@@ -12,10 +12,9 @@ describe('validateExperimentConfig tests', () => {
             }
         };
         
-        const invalidReasons = validateExperimentConfig(experimentConfig);
+        const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
-        expect(Array.isArray(invalidReasons)).toBeTruthy();
-        expect(invalidReasons.length).toEqual(0);
+        expect(invalidExperimentReasonsMap).toEqual({});
     });
 
 });
