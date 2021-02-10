@@ -36,7 +36,7 @@ type InvalidVariationReasons = string[];
 
 interface InvalidExperimentReasons {
     invalidReasons: string[];
-    variations: {
+    variations?: {
         [variationName: string]: string[];  
     };
 }
@@ -55,7 +55,7 @@ function normalizeVariationSettings(variationSettings: VariationSettings): Varia
 }
 
 function validateVariationSettings(experimentName: string, variationName: string, variationSettings: VariationSettings): { 
-    invalidReasons: InvalidVariationReasons,
+    invalidReasons: InvalidVariationReasons | null,
     variationTraffic: number
 } {
     const invalidReasons = [];
@@ -75,14 +75,13 @@ function validateVariationSettings(experimentName: string, variationName: string
 
     return {
         variationTraffic,
-        invalidReasons,
+        invalidReasons: invalidReasons.length > 0 ? invalidReasons : null,
     };
 }
 
-function validateExperimentSettings(experimentName: string, experimentSettings: ExperimentSettings): InvalidExperimentReasons {
+function validateExperimentSettings(experimentName: string, experimentSettings: ExperimentSettings): InvalidExperimentReasons | null {
     const invalidExperimentReasonsMap: InvalidExperimentReasons = {
         invalidReasons: [],
-        variations: {},
     };
 
     const inactiveStatus = typeof experimentSettings.inactive === 'undefined' ?
@@ -105,12 +104,24 @@ function validateExperimentSettings(experimentName: string, experimentSettings: 
             const { variationTraffic, invalidReasons: invalidVariationReasons } = validateVariationSettings(experimentName, variationName, variationSettings);
             
             totalVariationTraffic += variationTraffic;
-            invalidExperimentReasonsMap.variations[variationName] = invalidVariationReasons;
+
+            if (invalidVariationReasons) {
+                if (!invalidExperimentReasonsMap.variations) {
+                    invalidExperimentReasonsMap.variations = {};
+                }
+
+                invalidExperimentReasonsMap.variations[variationName] = invalidVariationReasons;
+            }
         });
 
         if (totalVariationTraffic > 100) {
             invalidExperimentReasonsMap.invalidReasons.push(`The total traffic allocated for all variations of ${experimentName} is greater than the max of 100: ${totalVariationTraffic}`);
         }
+    }
+
+    if (invalidExperimentReasonsMap.invalidReasons.length <= 0 &&
+        !invalidExperimentReasonsMap.variations) {
+        return null;
     }
 
     return invalidExperimentReasonsMap;
@@ -157,7 +168,10 @@ export function validateExperimentConfig(experimentConfig: ExperimentConfig): In
     const invalidReasons: InvalidExperimentReasonsMap = {};
     experimentNames.forEach(experimentName => {
         const experimentSettings = experimentConfig[experimentName];
-        invalidReasons[experimentName] = validateExperimentSettings(experimentName, experimentSettings);
+        const invalidExperimentReasons = validateExperimentSettings(experimentName, experimentSettings);
+        if (invalidExperimentReasons) {
+            invalidReasons[experimentName] = invalidExperimentReasons;
+        }
     });
     return invalidReasons;
 }
