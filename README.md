@@ -1,6 +1,6 @@
 # experisimple
 The goal of this project is to be a simple library for enabling experimentation.
-You choose the location to host the experimentation config and supply a unique id (optional) to use for bucketing.
+You choose the location to host the experimentation config and supply a unique id to use for bucketing.
 
 This library primarily offers the bucketing and the schema for definining experiments via config.
 
