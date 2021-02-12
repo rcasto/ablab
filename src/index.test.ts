@@ -1,7 +1,19 @@
-import { validateExperimentConfig, ExperimentConfig } from './index';
+import {
+    createExperimenter,
+    validateExperimentConfig,
+    ExperimentConfig
+} from './index';
+import murmurhash from 'murmurhash';
+
+jest.mock('murmurhash');
+
+const murmurhashMock = murmurhash as unknown as jest.Mock;
+
+beforeEach(() => {
+    murmurhashMock.mockClear();
+});
 
 describe('validateExperimentConfig tests', () => {
-
     it('can return true for simple experiment config', () => {
         const experimentConfig: ExperimentConfig = {
             experiment1: {
@@ -11,7 +23,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(invalidExperimentReasonsMap).toEqual({});
@@ -30,7 +42,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(invalidExperimentReasonsMap).toEqual({});
@@ -44,7 +56,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
@@ -58,7 +70,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
@@ -74,7 +86,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
@@ -88,7 +100,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
@@ -104,7 +116,7 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
@@ -119,9 +131,115 @@ describe('validateExperimentConfig tests', () => {
                 }
             }
         };
-        
+
         const invalidExperimentReasonsMap = validateExperimentConfig(experimentConfig);
 
         expect(Object.keys(invalidExperimentReasonsMap).length).toEqual(1);
+    });
+});
+
+describe('createExperimenter tests', () => {
+    it('can return null and log error on invalid experiment config', () => {
+        const experimentConfig: ExperimentConfig = {
+            experiment1: {
+                variations: {
+                    treatment: {
+                        traffic: -1,
+                    },
+                }
+            }
+        };
+        spyOn(console, 'error');
+
+        const result = createExperimenter(experimentConfig);
+
+        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(result).toBeNull();
+    });
+
+    it('can return experimenter object on valid experiment config', () => {
+        const experimentConfig: ExperimentConfig = {
+            experiment1: {
+                variations: {
+                    control: 50,
+                    treatment: 50
+                }
+            }
+        };
+
+        const result = createExperimenter(experimentConfig);
+
+        expect(typeof result === 'object').toBeTruthy();
+        expect(typeof result?.getVariationForExperiment === 'function');
+    });
+
+    describe('getVariationForExperiment tests', () => {
+        it('can return null and warn on inactive experiment', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    inactive: true,
+                    variations: {
+                        control: 50,
+                        treatment: 50
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+            spyOn(console, 'warn');
+
+            const result = experimenter?.getVariationForExperiment('experiment1', '');
+
+            expect(console.warn).toHaveBeenCalledTimes(1);
+            expect(result).toBeNull();
+        });
+
+        it('can return variation assignment object with empty object variation data', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: 100
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+            murmurhashMock.mockReturnValue(0);
+
+            const result = experimenter?.getVariationForExperiment('experiment1', '');
+
+            expect(result).toBeDefined();
+            expect(result?.variationName).toEqual('treatment');
+            expect(result?.variationData).toEqual({});
+        });
+
+        it('can return variation assignment object with variation data', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: {
+                            traffic: 100,
+                            data1: 'fake-data',
+                            data2: 42,
+                            data3: {
+                                data4: 'more-fake-data'
+                            }
+                        }
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+            murmurhashMock.mockReturnValue(0);
+
+            const result = experimenter?.getVariationForExperiment('experiment1', '');
+
+            expect(result).toBeDefined();
+            expect(result?.variationName).toEqual('treatment');
+            expect(result?.variationData).toEqual({
+                data1: 'fake-data',
+                data2: 42,
+                data3: {
+                    data4: 'more-fake-data'
+                }
+            });
+        });
     });
 });

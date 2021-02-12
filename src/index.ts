@@ -4,11 +4,13 @@ const num_buckets = 10000;
 const murmur_constant_seed = 1;
 const traffic_multiplier = 100;
 
+interface VariationData {
+    [customKey: string]: any;
+}
+
 interface VariationSettingsObject {
     traffic: number;
-    data?: {
-        [customKey: string]: any;
-    };
+    [customKey: string]: any;
 }
 
 type VariationSettings = number | VariationSettingsObject;
@@ -26,6 +28,7 @@ export interface ExperimentConfig {
 
 type VariationAssignment = null | {
     variationName: string;
+    variationData: VariationData;
 };
 
 interface Experimenter {
@@ -145,15 +148,22 @@ function getVariationForExperiment(experimentConfig: ExperimentConfig, experimen
     let bucketIndex = uniqueIdHash % num_buckets;
 
     const experimentVariations = experimentSettings.variations;
-    let assignedExperimentVariation = null;
+    let assignedExperimentVariation: VariationAssignment = null;
 
     Object.keys(experimentVariations)
         .some(experimentVariation => {
             const experimentVariationSettings = normalizeVariationSettings(experimentVariations[experimentVariation]);
-            const maxExperimentVariationBucketIndex = experimentVariationSettings.traffic * traffic_multiplier;
+            const {
+                traffic: experimentVariationTraffic,
+                ...experimentVariationData
+            } = experimentVariationSettings;
+            const maxExperimentVariationBucketIndex = experimentVariationTraffic * traffic_multiplier;
 
             if (bucketIndex < maxExperimentVariationBucketIndex) {
-                assignedExperimentVariation = experimentVariation;
+                assignedExperimentVariation = {
+                    variationName: experimentVariation,
+                    variationData: experimentVariationData,
+                };
                 return true;
             }
 
