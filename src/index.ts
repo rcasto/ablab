@@ -54,6 +54,10 @@ function normalizeVariationSettings(variationSettings: VariationSettings): Varia
     return variationSettings;
 }
 
+function isValidTraffic(trafficValue: number): boolean {
+    return trafficValue >= 0 && trafficValue <= 100;
+}
+
 function validateVariationSettings(experimentName: string, variationName: string, variationSettings: VariationSettings): { 
     invalidReasons: InvalidVariationReasons | null,
     variationTraffic: number
@@ -61,13 +65,15 @@ function validateVariationSettings(experimentName: string, variationName: string
     const invalidReasons = [];
     let variationTraffic = 0;
 
-    if (typeof variationSettings === 'number') {
+    if (typeof variationSettings === 'number' &&
+        isValidTraffic(variationSettings)) {
         variationTraffic = variationSettings;
     } else if (variationSettings && typeof variationSettings === 'object') {
-        if (typeof variationSettings.traffic === 'number') {
+        if (typeof variationSettings.traffic === 'number' &&
+            isValidTraffic(variationSettings.traffic)) {
             variationTraffic = variationSettings.traffic;
         } else {
-            invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is not a number: ${variationSettings.traffic}`);
+            invalidReasons.push(`The traffic allocated for ${variationName} within experiment ${experimentName} is invalid: ${variationSettings.traffic}`);
         }
     } else {
         invalidReasons.push(`The settings for ${variationName} within experiment ${experimentName} are not a number or object: ${variationSettings}`);
