@@ -1,0 +1,11 @@
+{
+  "name": "sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "example.js",
+  "scripts": {
+    "start": "node example.js"
+  },
+  "author": "Richie Casto (https://github.com/rcasto)",
+  "license": "MIT"
+}

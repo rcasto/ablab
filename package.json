@@ -2,7 +2,7 @@
   "name": "experisimple",
   "version": "0.0.1",
   "description": "The goal of this project is to be a simple library for enabling experimentation. You choose the location to host the experimentation config and supply a unique id to use for bucketing.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "build": "rollup --config rollup.config.js",
