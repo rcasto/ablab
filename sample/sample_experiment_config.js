@@ -1,36 +1,25 @@
 export const sampleExperimentConfig = {
-    "experiment1": {
-        "active": true,
-        "variations": {
-            "control": 50,
-            "treatment": 50
+    "changing the button color": {
+        "treatment": {
+            "traffic": 50,
+            "data": {
+                "color": "yellow"
+            }
+        },
+        "control": {
+            "traffic": 50,
+            "data": {
+                "color": "blue"
+            }
         }
     },
-    "experiment2": {
-        "active": true,
-        "variations": {
-            "control": 50,
-            "treatment": 50
-        }
-    },
-    "experiment3": {
-        "variations": {
-            "control": 50,
-            "treatment": 50
-        }
-    },
-    "experiment4": {
-        "variations": {
-            "control": 5,
-            "treatment": 5
-        }
-    },
-    "multiple-variations": {
-        "active": true,
-        "variations": {
-            "A": 33.33,
-            "B": 33.33,
-            "C": 33.34
+
+    "make the animation slower": {
+        "treatment": {
+            "traffic": 50
+        },
+        "control": {
+            "traffic": 50
         }
     }
 };
