@@ -2,7 +2,8 @@
   "name": "lab",
   "version": "0.0.1",
   "description": "A simple library for enabling experimentation.",
-  "main": "dist/index.js",
+  "main": "dist/lab.umd.js",
+  "module": "dist/lab.es.js",
   "type": "module",
   "scripts": {
     "build": "rollup --config rollup.config.js",
