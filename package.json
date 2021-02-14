@@ -6,7 +6,10 @@
   "module": "dist/lab.es.js",
   "type": "module",
   "scripts": {
-    "build": "rollup --config rollup.config.js",
+    "build": "npm-run-all clean --parallel build:*",
+    "build:bundles": "rollup --config rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "clean": "rimraf dist",
     "test": "jest"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
@@ -22,6 +25,8 @@
     "@types/jest": "26.0.20",
     "babel-jest": "26.6.3",
     "jest": "26.6.3",
+    "npm-run-all": "4.1.5",
+    "rimraf": "3.0.2",
     "rollup": "2.39.0",
     "tslib": "2.1.0",
     "typescript": "4.1.5",
