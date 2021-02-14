@@ -1,7 +1,7 @@
 {
-  "name": "experisimple",
+  "name": "lab",
   "version": "0.0.1",
-  "description": "The goal of this project is to be a simple library for enabling experimentation. You choose the location to host the experimentation config and supply a unique id to use for bucketing.",
+  "description": "A simple library for enabling experimentation.",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {

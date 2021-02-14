@@ -1,30 +1,27 @@
-# experisimple
-The goal of this project is to be a simple library for enabling experimentation.
-You choose the location to host the experimentation config and supply a unique id to use for bucketing.
+# lab
+A simple library for enabling experimentation.
 
-This library primarily offers the bucketing and the schema for definining experiments via config.
+This library primarily offers experiment bucketing and defines a schema for experiments using a JSON based config.
 
 ## Scope
-- Configuration should support
+Configuration should support:
     - Multiple experiments
+        - Also, of course, multiple variations per experiment
     - Turn experiment on/off
-    - Specifying traffic allocation
-    - Specifying variations A/B/C/.... and their percentages
-        - Should variations be able to be custom named?
+        - Experiments are enabled by default
+        - Experiments do support being inactivated though, or turned off
+    - Specifying variations A/B/C/.... and their traffic allocation
+        - Variations support custom naming
+        - Variations support associated custom data
+        - Traffic allocation is on a percentage scale or (0 -> 100)
+        - Support to 2nd decimal precision, ex) 33.33
 
-## Not in scope
+### Not in scope
 - Audience qualifcations
-    - Integrators/consumers can do this in their own code before experiment assignment
-- Custom variables associated with variations not supported at least in initial version
-    - May want to think through or open up possibility
+    - Integrator can select logic of when or the conditions of when to run experiment assignment
 - Supporting multiple environments (dev/staging/prod)
-    - Developer can make sure to use different experiment configs themselves or such
+    - Integrator (at least for now) can make sure to use different experiment configs themselves or such
 - Supporting sticky (uniqueId, experimentName) => variatonName
-    - Useful if during experiment run, traffic is dialed back ex) 50% -> 25% or such
-
----
-Thinking through more stuff:
-- `getVariationForExperiment`: Return object containing variationName, metadata on experiment, and additional properties added to variation object
-- Each variation within the `variations` field of an experiment is an object, hmmmm or number representing the traffic allocations for a variation. If an object is used, the field `traffic` is what is looked up for the variations well, traffic allocation
-- Experiments in config should on active by default, you can add the `inactive: true` key-value pair to the experiment if you want it to be disabled
-    - Encourages deleting inactive experiments, but allows disabling temporarily or lining up/scheduling for experiments as well
+    - Integrator can choose to maintain an external (uniqueId, experimentName) => variation name cache
+- Does not (at least currently) support auto reloading/fetching the experiment config
+    - Integrator can select/schedule the cadence at which they want to update their experiment config
