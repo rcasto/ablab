@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
+import { createExperimenter } from '../dist/lab.es';
+
 import { sampleExperimentConfig } from './sample_experiment_config.js';
-import { createExperimenter } from './index.js';
 import { stopwatch } from './performanceUtil.js';
 
 const numSimulations = 100;
@@ -15,7 +16,7 @@ for (let i = 0; i < numSimulations; i++) {
 
         for (let i = 0; i < numCyclesPerSimulation; i++) {
             const uniqueId = uuidv4();
-            const variation = experimenter.getVariationForExperiment('multiple-variations', uniqueId);
+            const variationResult = experimenter.getVariationForExperiment('multiple-variations', uniqueId);
 
             variationCounts[variation] = (variationCounts[variation] || 0) + 1;
         }
