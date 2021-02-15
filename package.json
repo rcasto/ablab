@@ -4,7 +4,6 @@
   "description": "A simple library for enabling experimentation.",
   "main": "dist/lab.umd.js",
   "module": "dist/lab.es.js",
-  "type": "module",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm-run-all clean --parallel build:*",
