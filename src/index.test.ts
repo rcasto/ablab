@@ -262,4 +262,64 @@ describe('createExperimenter tests', () => {
             });
         });
     });
+
+    describe('getVariationsForUniqueId tests', () => {
+        it('can return empty experiment variation assignment map when there are no experiments', () => {
+            const experimentConfig: ExperimentConfig = {};
+            const experimenter = createExperimenter(experimentConfig);
+
+            const result = experimenter?.getVariationsForUniqueId('');
+
+            expect(result).toEqual({});
+        });
+
+        it('can return experiment variation assignment map for 1 experiment', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: 100
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+
+            const result = experimenter?.getVariationsForUniqueId('');
+
+            expect(result).toEqual({
+                experiment1: {
+                    variationName: 'treatment',
+                    variationData: {},
+                }
+            });
+        });
+
+        it('can return experiment variation assignment map for 2 or more experiments', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: 100
+                    }
+                },
+                experiment2: {
+                    variations: {
+                        control: 100
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+
+            const result = experimenter?.getVariationsForUniqueId('');
+
+            expect(result).toEqual({
+                experiment1: {
+                    variationName: 'treatment',
+                    variationData: {},
+                },
+                experiment2: {
+                    variationName: 'control',
+                    variationData: {},
+                }
+            });
+        });
+    });
 });

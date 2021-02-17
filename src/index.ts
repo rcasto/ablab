@@ -31,8 +31,13 @@ type VariationAssignment = null | {
     variationData: VariationData;
 };
 
+interface VariationAssignmentMap {
+    [variationName: string]: VariationAssignment;
+}
+
 interface Experimenter {
     getVariationForExperiment: (experimentName: string, uniqueId: string) => VariationAssignment;
+    getVariationsForUniqueId: (uniqueId: string) => VariationAssignmentMap;
 }
 
 type InvalidVariationReasons = string[];
@@ -180,9 +185,18 @@ function getVariationForExperiment(experimentConfig: ExperimentConfig, experimen
     return assignedExperimentVariation;
 }
 
-// function getVariationsForUniqueId(uniqueId) {
+function getVariationsForUniqueId(experimentConfig: ExperimentConfig, uniqueId: string): VariationAssignmentMap {
+    const variationAssignmentMap: VariationAssignmentMap = {};
 
-// }
+    const experimentNames =  Object.keys(experimentConfig);
+    experimentNames
+        .forEach(experimentName => {
+            const variationResult = getVariationForExperiment(experimentConfig, experimentName, uniqueId);
+            variationAssignmentMap[experimentName] = variationResult;
+        });
+
+    return variationAssignmentMap;
+}
 
 export function validateExperimentConfig(experimentConfig: ExperimentConfig): InvalidExperimentReasonsMap {
     const experimentNames = Object.keys(experimentConfig);
@@ -207,5 +221,6 @@ export function createExperimenter(experimentConfig: ExperimentConfig): Experime
 
     return {
         getVariationForExperiment: (experimentName, uniqueId) => getVariationForExperiment(experimentConfig, experimentName, uniqueId),
+        getVariationsForUniqueId: (uniqueId) => getVariationsForUniqueId(experimentConfig, uniqueId),
     };
 }
