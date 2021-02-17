@@ -10,7 +10,7 @@ interface VariationData {
 
 interface VariationSettingsObject {
     traffic: number;
-    [customKey: string]: any;
+    data?: VariationData;
 }
 
 type VariationSettings = number | VariationSettingsObject;
@@ -137,7 +137,12 @@ function validateExperimentSettings(experimentName: string, experimentSettings: 
 }
 
 function getVariationForExperiment(experimentConfig: ExperimentConfig, experimentName: string, uniqueId: string): VariationAssignment {
-    const experimentSettings = experimentConfig[experimentName];
+    const experimentSettings = experimentConfig[experimentName] || null;
+
+    if (!experimentSettings) {
+        console.warn(`${experimentName} does not reflect a properly configured experiment`);
+        return null;
+    }
 
     if (experimentSettings.inactive) {
         console.warn(`${experimentName} is not currently on or active`);
@@ -155,14 +160,14 @@ function getVariationForExperiment(experimentConfig: ExperimentConfig, experimen
             const experimentVariationSettings = normalizeVariationSettings(experimentVariations[experimentVariation]);
             const {
                 traffic: experimentVariationTraffic,
-                ...experimentVariationData
+                data: experimentVariationData,
             } = experimentVariationSettings;
             const maxExperimentVariationBucketIndex = experimentVariationTraffic * traffic_multiplier;
 
             if (bucketIndex < maxExperimentVariationBucketIndex) {
                 assignedExperimentVariation = {
                     variationName: experimentVariation,
-                    variationData: experimentVariationData,
+                    variationData: experimentVariationData || {},
                 };
                 return true;
             }

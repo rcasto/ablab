@@ -174,6 +174,24 @@ describe('createExperimenter tests', () => {
     });
 
     describe('getVariationForExperiment tests', () => {
+        it('can return null for invalid experiment', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        control: 50,
+                        treatment: 50
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+            spyOn(console, 'warn');
+
+            const result = experimenter?.getVariationForExperiment('invalid-experiment', '');
+
+            expect(console.warn).toHaveBeenCalledTimes(1);
+            expect(result).toBeNull();
+        });
+
         it('can return null and warn on inactive experiment', () => {
             const experimentConfig: ExperimentConfig = {
                 experiment1: {
@@ -217,10 +235,12 @@ describe('createExperimenter tests', () => {
                     variations: {
                         treatment: {
                             traffic: 100,
-                            data1: 'fake-data',
-                            data2: 42,
-                            data3: {
-                                data4: 'more-fake-data'
+                            data: {
+                                data1: 'fake-data',
+                                data2: 42,
+                                data3: {
+                                    data4: 'more-fake-data'
+                                }
                             }
                         }
                     }
