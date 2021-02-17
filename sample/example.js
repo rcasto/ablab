@@ -17,7 +17,7 @@ for (let i = 0; i < numSimulations; i++) {
 
         for (let i = 0; i < numCyclesPerSimulation; i++) {
             const uniqueId = uuidv4();
-            const variationResult = experimenter.getVariationForExperiment('multiple-variations', uniqueId);
+            const variationResult = experimenter.getVariationForExperiment('changing the button color', uniqueId);
 
             variationCounts[variationResult.variationName] = (variationCounts[variationResult.variationName] || 0) + 1;
         }
