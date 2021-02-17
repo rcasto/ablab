@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createExperimenter } from 'lab';
-// import { createExperimenter } from '../dist/lab.es.js';
 
 import { sampleExperimentConfig } from './sample_experiment_config.js';
 import { stopwatch } from './performanceUtil.js';
