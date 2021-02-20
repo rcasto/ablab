@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { validateExperimentConfig } from './index';
 
 // node/npx lab [command]

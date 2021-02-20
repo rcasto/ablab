@@ -7,7 +7,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm-run-all clean --parallel build:*",
-    "build:bundles": "rollup --config rollup/rollup.config.js",
+    "build:library": "rollup --config rollup/rollup.config.js",
+    "build:cli": "rollup --config rollup/rollup.cli.config.js",
     "build:types": "tsc --emitDeclarationOnly",
     "prepack": "npm-run-all build",
     "clean": "rimraf dist",
