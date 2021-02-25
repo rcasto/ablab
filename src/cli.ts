@@ -1,3 +1,4 @@
+import { access } from 'fs/promises';
 import { validateExperimentConfig } from './index';
 
 // node/npx lab [command]
@@ -14,12 +15,21 @@ if (!experimentConfigPath) {
     process.exit(1);
 }
 
-switch (commandName) {
-    case 'validate':
-        console.log('should validate experiment config');
-    case 'build':
-        console.log('TODO: Support later, build experiment config, generating random seeds for experiments');
-    default:
-        console.error(`Invalid command provided: ${commandName}`);
+access(experimentConfigPath)
+    .then(() => {
+        switch (commandName) {
+            case 'validate':
+                console.log('should validate experiment config');
+                break;
+            case 'build':
+                console.log('TODO: Support later, build experiment config, generating random seeds for experiments');
+                break;
+            default:
+                console.error(`Invalid command provided: ${commandName}`);
+                process.exit(1);
+        }
+    })
+    .catch((err) => {
+        console.error(`Unable to access file at path ${experimentConfigPath}: ${err}`);
         process.exit(1);
-}
+    });
