@@ -59,6 +59,19 @@ describe('lab cli tests', () => {
         }
     });
 
+    it('can handle case where given experiment config path does not point to valid JSON', async () => {
+        try {
+            await runCliWithArgs('fake-command', 'invalid-experiment-config.txt');
+
+            // This shouldn't be reached
+            expect(true).toBeFalsy();
+        } catch (err) {
+            expect(err.code).toEqual(1);
+            expect(err.stdout).toEqual('');
+            expect(err.stderr).not.toEqual('');
+        }
+    });
+
     it('can handle case where at given command is invalid', async () => {
         try {
             await runCliWithArgs('fake-command', 'test_experiment_config.json');
@@ -72,17 +85,14 @@ describe('lab cli tests', () => {
         }
     });
 
-    it('can validate experiment config', async () => {
+    it('can validate experiment config - no errors', async () => {
         try {
             const {
-                stderr,
                 stdout
             } = await runCliWithArgs('validate', 'test_experiment_config.json');
 
-            expect(stdout).not.toEqual('');
+            expect(stdout).toEqual('{}\n');
         } catch (err) {
-            console.error(err);
-
             // This shouldn't be reached
             expect(true).toBeFalsy();
         }

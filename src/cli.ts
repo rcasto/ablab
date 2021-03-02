@@ -1,5 +1,5 @@
-import { access } from 'fs/promises';
-import { validateExperimentConfig } from './index';
+import { access, readFile } from 'fs/promises';
+import { validateExperimentConfig } from './index.js';
 
 // node/npx lab [command]
 const commandName = (process.argv[2] || '').toLowerCase();
@@ -16,10 +16,16 @@ if (!experimentConfigPath) {
 }
 
 access(experimentConfigPath)
-    .then(() => {
+    .then(async () => {
+        const experimentConfigAsString = await readFile(experimentConfigPath, {
+            encoding: 'utf-8',
+        });
+        const experimentConfigJSON = JSON.parse(experimentConfigAsString);
+
         switch (commandName) {
             case 'validate':
-                console.log('should validate experiment config');
+                const validationResultMap = validateExperimentConfig(experimentConfigJSON);
+                console.log(validationResultMap);
                 break;
             case 'build':
                 console.log('TODO: Support later, build experiment config, generating random seeds for experiments');
@@ -30,6 +36,6 @@ access(experimentConfigPath)
         }
     })
     .catch((err) => {
-        console.error(`Unable to access file at path ${experimentConfigPath}: ${err}`);
+        console.error(`Invalid experiment config at path ${experimentConfigPath}: ${err}`);
         process.exit(1);
     });
