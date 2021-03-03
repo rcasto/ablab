@@ -1,7 +1,12 @@
 import { promisify } from 'util';
 import { exec } from 'child_process';
+import path from 'path';
 
 const execPromise = promisify(exec);
+
+const sampleConfigsDirectoryPath = path.resolve('sample-configs');
+const nonJSONExperimentConfigPath = path.resolve(sampleConfigsDirectoryPath, 'invalid-experiment-config.txt');
+const validExperimentConfigPath = path.resolve(sampleConfigsDirectoryPath, 'simple-valid-experiment-config.json');
 
 async function runCliWithArgs(...args: string[]) {
     // https://github.com/TypeStrong/ts-node/issues/1007#issue-598417180
@@ -61,7 +66,7 @@ describe('lab cli tests', () => {
 
     it('can handle case where given experiment config path does not point to valid JSON', async () => {
         try {
-            await runCliWithArgs('fake-command', 'invalid-experiment-config.txt');
+            await runCliWithArgs('fake-command', nonJSONExperimentConfigPath);
 
             // This shouldn't be reached
             expect(true).toBeFalsy();
@@ -74,7 +79,7 @@ describe('lab cli tests', () => {
 
     it('can handle case where at given command is invalid', async () => {
         try {
-            await runCliWithArgs('fake-command', 'test_experiment_config.json');
+            await runCliWithArgs('fake-command', validExperimentConfigPath);
 
             // This shouldn't be reached
             expect(true).toBeFalsy();
@@ -89,7 +94,7 @@ describe('lab cli tests', () => {
         try {
             const {
                 stdout
-            } = await runCliWithArgs('validate', 'test_experiment_config.json');
+            } = await runCliWithArgs('validate', validExperimentConfigPath);
 
             expect(stdout).toEqual('{}\n');
         } catch (err) {
