@@ -25,7 +25,7 @@ access(experimentConfigPath)
         switch (commandName) {
             case 'validate':
                 const validationResultMap = validateExperimentConfig(experimentConfigJSON);
-                console.log(validationResultMap);
+                console.log(JSON.stringify(validationResultMap, null, '\t'));
                 break;
             case 'build':
                 console.log('TODO: Support later, build experiment config, generating random seeds for experiments');

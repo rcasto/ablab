@@ -7,6 +7,7 @@ const execPromise = promisify(exec);
 const sampleConfigsDirectoryPath = path.resolve('sample-configs');
 const nonJSONExperimentConfigPath = path.resolve(sampleConfigsDirectoryPath, 'invalid-experiment-config.txt');
 const validExperimentConfigPath = path.resolve(sampleConfigsDirectoryPath, 'simple-valid-experiment-config.json');
+const experimentConfigWithErrorPath = path.resolve(sampleConfigsDirectoryPath, 'simple-experiment-config-with-error.json');
 
 async function runCliWithArgs(...args: string[]) {
     // https://github.com/TypeStrong/ts-node/issues/1007#issue-598417180
@@ -98,8 +99,26 @@ describe('lab cli tests', () => {
                 const {
                     stdout
                 } = await runCliWithArgs('validate', validExperimentConfigPath);
+                const stdoutAsJSON = JSON.parse(stdout);
     
-                expect(stdout).toEqual('{}\n');
+                expect(Object.keys(stdoutAsJSON).length).toEqual(0);
+            } catch (err) {
+                // This shouldn't be reached
+                expect(true).toBeFalsy();
+            }
+        });
+
+        it('can validate experiment config - has an error', async () => {
+            try {
+                const {
+                    stdout
+                } = await runCliWithArgs('validate', experimentConfigWithErrorPath);
+                const stdoutAsJSON = JSON.parse(stdout);
+                const experimentKeys = Object.keys(stdoutAsJSON);
+
+                expect(experimentKeys.length).toEqual(1);
+                expect(stdoutAsJSON[experimentKeys[0]].invalidReasons).toBeDefined();
+                expect(stdoutAsJSON[experimentKeys[0]].invalidReasons.length).toEqual(1);
             } catch (err) {
                 // This shouldn't be reached
                 expect(true).toBeFalsy();

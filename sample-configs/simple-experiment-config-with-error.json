@@ -1,0 +1,18 @@
+{
+    "changing the button color": {
+        "variations": {
+            "treatment": {
+                "traffic": 50,
+                "data": {
+                    "color": "yellow"
+                }
+            },
+            "control": {
+                "traffic": 100,
+                "data": {
+                    "color": "blue"
+                }
+            }
+        }
+    }
+}
