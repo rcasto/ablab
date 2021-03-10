@@ -1,5 +1,27 @@
 import { access, readFile } from 'fs/promises';
-import { validateExperimentConfig } from './index.js';
+import { ExperimentConfig, validateExperimentConfig } from './index.js';
+
+interface ValidationResult {
+    isValid: boolean;
+    message: string;
+}
+
+function getExperimentConfigValidationResult(experimentConfig: ExperimentConfig): ValidationResult {
+    const validationResultMap = validateExperimentConfig(experimentConfig);
+    const numExperimentsWithValidationErrors = Object.keys(validationResultMap).length;
+
+    if (numExperimentsWithValidationErrors > 0) {
+        return {
+            isValid: false,
+            message: JSON.stringify(validationResultMap, null, '\t'),
+        };
+    }
+
+    return {
+        isValid: true,
+        message: 'Experiment config has no errors.',
+    };
+}
 
 // node/npx lab [command]
 const commandName = (process.argv[2] || '').toLowerCase();
@@ -20,15 +42,26 @@ access(experimentConfigPath)
         const experimentConfigAsString = await readFile(experimentConfigPath, {
             encoding: 'utf-8',
         });
-        const experimentConfigJSON = JSON.parse(experimentConfigAsString);
+        const experimentConfigJSON: ExperimentConfig = JSON.parse(experimentConfigAsString);
+        const validationResult = getExperimentConfigValidationResult(experimentConfigJSON);
 
         switch (commandName) {
             case 'validate':
-                const validationResultMap = validateExperimentConfig(experimentConfigJSON);
-                console.log(JSON.stringify(validationResultMap, null, '\t'));
+                console.log(validationResult.message);
                 break;
             case 'build':
-                console.log('TODO: Support later, build experiment config, generating random seeds for experiments');
+                if (!validationResult.isValid) {
+                    console.log(validationResult.message);
+                    return;
+                }
+
+                const experimentSettings = Object.values(experimentConfigJSON);
+                experimentSettings
+                    .forEach(experimentSetting => {
+                        if (!experimentSetting.seed) {
+                            
+                        }
+                    });
                 break;
             default:
                 console.error(`Invalid command provided: ${commandName}`);

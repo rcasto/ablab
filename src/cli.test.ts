@@ -99,9 +99,8 @@ describe('lab cli tests', () => {
                 const {
                     stdout
                 } = await runCliWithArgs('validate', validExperimentConfigPath);
-                const stdoutAsJSON = JSON.parse(stdout);
     
-                expect(Object.keys(stdoutAsJSON).length).toEqual(0);
+                expect(stdout).toEqual('Experiment config has no errors.\n');
             } catch (err) {
                 // This shouldn't be reached
                 expect(true).toBeFalsy();
