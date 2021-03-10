@@ -16,6 +16,7 @@ interface VariationSettingsObject {
 type VariationSettings = number | VariationSettingsObject;
 
 interface ExperimentSettings {
+    seed?: string;
     inactive?: boolean;
     variations: {
         [variationName: string]: VariationSettings;
@@ -105,6 +106,10 @@ function validateExperimentSettings(experimentName: string, experimentSettings: 
         invalidExperimentReasonsMap.invalidReasons.push(`inactive for ${experimentName} is not a boolean value: ${inactiveStatus}`);
     }
 
+    if (experimentSettings.seed && typeof experimentSettings.seed !== 'string') {
+        invalidExperimentReasonsMap.invalidReasons.push(`seed for ${experimentName} is not a boolean value: ${experimentSettings.seed}`);
+    }
+
     const variations = experimentSettings['variations'];
 
     if (variations && typeof variations !== 'object') {
@@ -154,7 +159,8 @@ function getVariationForExperiment(experimentConfig: ExperimentConfig, experimen
         return null;
     }
 
-    const uniqueIdHash = murmurhash(uniqueId, murmur_constant_seed);
+    const uniqueExperimentSeed = experimentSettings.seed || '';
+    const uniqueIdHash = murmurhash(uniqueId + uniqueExperimentSeed, murmur_constant_seed);
     let bucketIndex = uniqueIdHash % num_buckets;
 
     const experimentVariations = experimentSettings.variations;

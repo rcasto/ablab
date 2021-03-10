@@ -3,15 +3,6 @@ import {
     validateExperimentConfig,
     ExperimentConfig
 } from './index';
-import murmurhash from 'murmurhash';
-
-jest.mock('murmurhash');
-
-const murmurhashMock = murmurhash as unknown as jest.Mock;
-
-beforeEach(() => {
-    murmurhashMock.mockClear();
-});
 
 describe('validateExperimentConfig tests', () => {
     it('can return true for simple experiment config', () => {
@@ -220,7 +211,6 @@ describe('createExperimenter tests', () => {
                 }
             };
             const experimenter = createExperimenter(experimentConfig);
-            murmurhashMock.mockReturnValue(0);
 
             const result = experimenter?.getVariationForExperiment('experiment1', '');
 
@@ -247,7 +237,6 @@ describe('createExperimenter tests', () => {
                 }
             };
             const experimenter = createExperimenter(experimentConfig);
-            murmurhashMock.mockReturnValue(0);
 
             const result = experimenter?.getVariationForExperiment('experiment1', '');
 
@@ -260,6 +249,77 @@ describe('createExperimenter tests', () => {
                     data4: 'more-fake-data'
                 }
             });
+        });
+
+        it('can return deterministic variation assignment object for given unique id', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: 50,
+                        control: 50,
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+
+            const result1 = experimenter?.getVariationForExperiment('experiment1', '');
+            const result2 = experimenter?.getVariationForExperiment('experiment1', '');
+
+            expect(result1).toBeDefined();
+            expect(result2).toBeDefined();
+            expect(result1?.variationName).toEqual(result2?.variationName);
+            expect(result1?.variationData).toEqual(result2?.variationData);
+        });
+
+        it('can return deterministic variation assignment object for given unique id with same experiment seed', () => {
+            const experimentConfig: ExperimentConfig = {
+                experiment1: {
+                    seed: 'fake',
+                    variations: {
+                        treatment: 50,
+                        control: 50,
+                    }
+                }
+            };
+            const experimenter = createExperimenter(experimentConfig);
+
+            const result1 = experimenter?.getVariationForExperiment('experiment1', '');
+            const result2 = experimenter?.getVariationForExperiment('experiment1', '');
+
+            expect(result1).toBeDefined();
+            expect(result2).toBeDefined();
+            expect(result1?.variationName).toEqual(result2?.variationName);
+            expect(result1?.variationData).toEqual(result2?.variationData);
+        });
+
+        it('can return different variation assignment object for given unique id, if experiment seeds differ', () => {
+            const experimentConfig1: ExperimentConfig = {
+                experiment1: {
+                    variations: {
+                        treatment: 50,
+                        control: 50,
+                    }
+                }
+            };
+            const experimentConfig2: ExperimentConfig = {
+                experiment1: {
+                    seed: 'fake',
+                    variations: {
+                        treatment: 50,
+                        control: 50,
+                    }
+                }
+            };
+            const experimenter1 = createExperimenter(experimentConfig1);
+            const experimenter2 = createExperimenter(experimentConfig2);
+
+            const result1 = experimenter1?.getVariationForExperiment('experiment1', '');
+            const result2 = experimenter2?.getVariationForExperiment('experiment1', '');
+
+            expect(result1).toBeDefined();
+            expect(result2).toBeDefined();
+            expect(result1?.variationName).not.toEqual(result2?.variationName);
+            expect(result1?.variationData).toEqual(result2?.variationData);
         });
     });
 
