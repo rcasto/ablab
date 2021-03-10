@@ -38,5 +38,10 @@
   },
   "bin": {
     "lab": "dist/cli.js"
+  },
+  "jest": {
+    "setupFiles": [
+      "./testSetup.js"
+    ]
   }
 }
