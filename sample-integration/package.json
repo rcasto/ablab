@@ -1,9 +1,10 @@
 {
-  "name": "sample",
+  "name": "sample-lab-integration",
   "version": "1.0.0",
   "description": "",
   "main": "example.js",
   "type": "module",
+  "private": true,
   "scripts": {
     "start": "node example.js"
   },
