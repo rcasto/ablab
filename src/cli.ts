@@ -49,20 +49,20 @@ access(experimentConfigPath)
             case 'validate':
                 console.log(validationResult.message);
                 break;
-            case 'build':
-                if (!validationResult.isValid) {
-                    console.log(validationResult.message);
-                    return;
-                }
+            // case 'build':
+            //     if (!validationResult.isValid) {
+            //         console.log(validationResult.message);
+            //         return;
+            //     }
 
-                const experimentSettings = Object.values(experimentConfigJSON);
-                experimentSettings
-                    .forEach(experimentSetting => {
-                        if (!experimentSetting.seed) {
+            //     const experimentSettings = Object.values(experimentConfigJSON);
+            //     experimentSettings
+            //         .forEach(experimentSetting => {
+            //             if (!experimentSetting.seed) {
                             
-                        }
-                    });
-                break;
+            //             }
+            //         });
+            //     break;
             default:
                 console.error(`Invalid command provided: ${commandName}`);
                 process.exit(1);

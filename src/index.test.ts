@@ -271,10 +271,9 @@ describe('createExperimenter tests', () => {
             expect(result1?.variationData).toEqual(result2?.variationData);
         });
 
-        it('can return deterministic variation assignment object for given unique id with same experiment seed', () => {
+        it('can return deterministic variation assignment object for a given unique id for the same experiment', () => {
             const experimentConfig: ExperimentConfig = {
                 experiment1: {
-                    seed: 'fake',
                     variations: {
                         treatment: 50,
                         control: 50,
@@ -292,29 +291,25 @@ describe('createExperimenter tests', () => {
             expect(result1?.variationData).toEqual(result2?.variationData);
         });
 
-        it('can return different variation assignment object for given unique id, if experiment seeds differ', () => {
+        it('can return different variation assignment object for a given unique id for different experiments with the same setup', () => {
             const experimentConfig1: ExperimentConfig = {
                 experiment1: {
                     variations: {
                         treatment: 50,
                         control: 50,
                     }
-                }
-            };
-            const experimentConfig2: ExperimentConfig = {
-                experiment1: {
-                    seed: 'fake',
+                },
+                fakeExperiment: {
                     variations: {
                         treatment: 50,
                         control: 50,
                     }
                 }
             };
-            const experimenter1 = createExperimenter(experimentConfig1);
-            const experimenter2 = createExperimenter(experimentConfig2);
+            const experimenter = createExperimenter(experimentConfig1);
 
-            const result1 = experimenter1?.getVariationForExperiment('experiment1', '');
-            const result2 = experimenter2?.getVariationForExperiment('experiment1', '');
+            const result1 = experimenter?.getVariationForExperiment('experiment1', '');
+            const result2 = experimenter?.getVariationForExperiment('fakeExperiment', '');
 
             expect(result1).toBeDefined();
             expect(result2).toBeDefined();
