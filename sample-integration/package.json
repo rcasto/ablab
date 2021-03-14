@@ -6,7 +6,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "node example.js"
+    "start": "node example.js",
+    "verify": "npx lab verify sample-experiment-config.json"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
   "license": "MIT",

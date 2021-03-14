@@ -12,7 +12,7 @@
     "build:cli": "rollup --config rollup/rollup.cli.config.js",
     "build:types": "tsc --emitDeclarationOnly",
     "prepack": "npm-run-all build",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist lab-*.tgz",
     "test": "jest"
   },
   "author": "Richie Casto (https://github.com/rcasto)",

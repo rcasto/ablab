@@ -225,3 +225,8 @@ export function createExperimenter(experimentConfig: ExperimentConfig): Experime
         getVariationsForUniqueId: (uniqueId) => getVariationsForUniqueId(experimentConfig, uniqueId),
     };
 }
+
+export default {
+    createExperimenter,
+    validateExperimentConfig,
+}
