@@ -10,8 +10,5 @@
     "verify": "npx lab verify sample-experiment-config.json"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
-  "license": "MIT",
-  "dependencies": {
-    "lab": "file:../lab-0.0.1.tgz"
-  }
+  "license": "MIT"
 }
