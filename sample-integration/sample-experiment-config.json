@@ -1,4 +1,4 @@
-export const sampleExperimentConfig = {
+{
     "changing the button color": {
         "variations": {
             "treatment": {
@@ -26,4 +26,4 @@ export const sampleExperimentConfig = {
             }
         }
     }
-};
+}
