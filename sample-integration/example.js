@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createExperimenter } from 'lab';
-// import lab from './node_modules/lab/dist/lab.es.js';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

@@ -1,10 +1,14 @@
-import { access, readFile } from 'fs/promises';
+import { promisify } from 'util';
+import { access, readFile } from 'fs';
 import { ExperimentConfig, validateExperimentConfig } from './index.js';
 
 interface ValidationResult {
     isValid: boolean;
     message: string;
 }
+
+const accessPromise = promisify(access);
+const readFilePromise = promisify(readFile);
 
 function getExperimentConfigValidationResult(experimentConfig: ExperimentConfig): ValidationResult {
     const validationResultMap = validateExperimentConfig(experimentConfig);
@@ -37,9 +41,9 @@ if (!experimentConfigPath) {
     process.exit(1);
 }
 
-access(experimentConfigPath)
+accessPromise(experimentConfigPath)
     .then(async () => {
-        const experimentConfigAsString = await readFile(experimentConfigPath, {
+        const experimentConfigAsString = await readFilePromise(experimentConfigPath, {
             encoding: 'utf-8',
         });
         const experimentConfigJSON: ExperimentConfig = JSON.parse(experimentConfigAsString);

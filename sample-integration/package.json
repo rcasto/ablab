@@ -7,8 +7,15 @@
   "private": true,
   "scripts": {
     "start": "node example.js",
-    "verify": "npx lab verify sample-experiment-config.json"
+    "verify": "npx lab verify sample-experiment-config.json",
+    "server": "http-server -p 3000 ."
   },
   "author": "Richie Casto (https://github.com/rcasto)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "0.12.3"
+  },
+  "dependencies": {
+    "lab": "file:../lab-0.0.1.tgz"
+  }
 }
