@@ -4,8 +4,9 @@ A simple library for enabling experimentation.
 This library primarily offers experiment bucketing and defines a schema for experiments using a JSON based config.
 
 ## Usage
-
+Work in progress...
 ## Experiment Schema
+Work in progress...
 
 ## Scope of this project
 Configuration should support:
