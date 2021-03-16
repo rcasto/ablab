@@ -18,6 +18,7 @@
     "build:cli": "rollup --config rollup/rollup.cli.config.js",
     "build:types": "tsc --emitDeclarationOnly",
     "prepack": "npm-run-all build",
+    "prepublishOnly": "npm test",
     "clean": "rimraf dist lab-*.tgz",
     "test": "jest"
   },
