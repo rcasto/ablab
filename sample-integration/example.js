@@ -1,9 +1,18 @@
+// ES Module import syntax
 import { v4 as uuidv4 } from 'uuid';
 import { createExperimenter } from 'lab';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { stopwatch } from './performanceUtil.js';
+
+// CommonJS Module import syntax
+// const { v4: uuidv4 } = require('uuid');
+// const { createExperimenter } = require('lab');
+// const { readFileSync } = require('fs');
+// const { resolve } = require('path');
+
+// const { stopwatch } = require('./performanceUtil.js');
 
 const numSimulations = 100;
 const numCyclesPerSimulation = 100000;
