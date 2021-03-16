@@ -7,7 +7,7 @@ export default {
     output: [
         {
             file: 'dist/cli.js',
-            format: 'cjs',
+            format: 'es',
             banner: '#!/usr/bin/env node',
         }
     ],
