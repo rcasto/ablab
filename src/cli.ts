@@ -27,7 +27,7 @@ function getExperimentConfigValidationResult(experimentConfig: ExperimentConfig)
     };
 }
 
-// node/npx lab [command]
+// node/npx testtube [command]
 const commandName = (process.argv[2] || '').toLowerCase();
 const experimentConfigPath = process.argv[3] || ''
 
