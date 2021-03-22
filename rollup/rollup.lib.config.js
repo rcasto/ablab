@@ -7,15 +7,15 @@ export default {
     input: 'src/index.ts',
     output: [
         {
-            file: 'dist/es/lab.js',
+            file: 'dist/es/ablab.js',
             format: 'es'
         },
         {
-            file: 'dist/cjs/lab.js',
+            file: 'dist/cjs/ablab.js',
             format: 'cjs'
         },
         {
-            file: 'dist/iife/lab.js',
+            file: 'dist/iife/ablab.js',
             format: 'iife',
             name: 'Lab',
         },

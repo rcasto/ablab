@@ -1,15 +1,15 @@
 {
-  "name": "testtube",
+  "name": "ablab",
   "version": "0.0.1",
   "description": "A simple library for enabling experimentation.",
   "type": "module",
-  "main": "./dist/cjs/lab.js",
-  "module": "./dist/es/lab.js",
+  "main": "./dist/cjs/ablab.js",
+  "module": "./dist/es/ablab.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/cjs/lab.js",
-      "default": "./dist/es/lab.js"
+      "require": "./dist/cjs/ablab.js",
+      "default": "./dist/es/ablab.js"
     }
   },
   "scripts": {
