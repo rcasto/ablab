@@ -17,7 +17,7 @@ export default {
         {
             file: 'dist/iife/ablab.js',
             format: 'iife',
-            name: 'Lab',
+            name: 'ablab',
         },
     ],
     plugins: [
