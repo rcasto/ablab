@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ablab - sample</title>
+    <style>
+        .animation-experiment {
+            display: flex;
+            align-items: center;
+            width: 120px;
+            height: 48px;
+            border: 1px solid black;
+        }
+        .animation-experiment .animation-inner {
+            width: 32px;
+            height: 32px;
+            border: 1px solid black;
+            border-radius: 50%;
+            animation-name: slide;
+            animation-direction: alternate;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes slide {
+            from {
+                transform: translateX(0%);
+            }
+            to {
+                transform: translateX(86px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="uniqueId-container">
+        <input type="text" name="uniqueId-input" id="uniqueId-input" disabled>
+        <button id="uniqueId-button">Regenerate Id</button>
+    </div>
+
+    <div class="animation-experiment">
+        <div class="animation-inner"></div>
+    </div>
+
+    <div class="copy-experiment"></div>
+    <hr>
+    <div class="shipped-experiment"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuidv4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/iife/lab.js"></script>
+    <script>
+        // ablab stuff
+        const experimentConfig = {
+            "changing the button color": {
+                "variations": {
+                    "treatment": {
+                        "traffic": 50,
+                        "data": {
+                            "color": "yellow",
+                            "textColor": "black"
+                        }
+                    },
+                    "control": {
+                        "traffic": 50,
+                        "data": {
+                            "color": "blue",
+                            "textColor": "white"
+                        }
+                    }
+                }
+            },
+
+            "make the animation slower": {
+                "variations": {
+                    "treatment": {
+                        "traffic": 50,
+                        "data": {
+                            "speed": 2
+                        }
+                    },
+                    "control": {
+                        "traffic": 50,
+                        "data": {
+                            "speed": 0.5
+                        }
+                    }
+                }
+            },
+
+            "change the copy/text": {
+                "variations": {
+                    "a": 33.33,
+                    "b": 33.33,
+                    "c": 33.33
+                }
+            },
+
+            // Represents an experiment that was successful
+            // and would later need to be cleaned up/promoted in code
+            "shipped flight/experiment": {
+                "variations": {
+                    "treatment": 100,
+                    "control": 0
+                }
+            }
+        };
+        const experimenter = Lab.createExperimenter(experimentConfig);
+
+        // dom elements
+        const uniqueIdTextInput = document.getElementById('uniqueId-input');
+        const uniqueIdRegenerateButton = document.getElementById('uniqueId-button');
+        const animationInnerDiv = document.querySelector('.animation-inner');
+        const copyDiv = document.querySelector('.copy-experiment');
+        const shippedDiv = document.querySelector('.shipped-experiment');
+
+        function bucket() {
+            uniqueIdTextInput.value = uuidv4();
+
+            const uniqueIdVariations = experimenter.getVariationsForUniqueId(uniqueIdTextInput.value);
+            console.log(uniqueIdVariations);
+
+            uniqueIdRegenerateButton.style.backgroundColor = uniqueIdVariations['changing the button color'].variationData.color;
+            uniqueIdRegenerateButton.style.color = uniqueIdVariations['changing the button color'].variationData.textColor;
+
+            animationInnerDiv.style.animationDuration = `${uniqueIdVariations['make the animation slower'].variationData.speed}s`;
+
+            switch (uniqueIdVariations['change the copy/text'].variationName) {
+                case 'b':
+                    copyDiv.textContent = 'This is the copy for variant b.';
+                    break;
+                case 'c':
+                    copyDiv.textContent = 'This is the copy for variant c.';
+                    break;
+                default:
+                    copyDiv.textContent = 'This is the copy for variant a or the control.';
+            }
+
+            switch (uniqueIdVariations['shipped flight/experiment'].variationName) {
+                case 'treatment':
+                    shippedDiv.textContent = "We are shipping this sweet copy, it shouldn't change no matter how many times we regenerate.";
+                    break;
+                default:
+                    shippedDiv.textContent = 'Uh oh! This variant should never be hit, check this shit out!';
+            }
+        }
+
+        function init() {
+            bucket();
+
+            uniqueIdRegenerateButton.addEventListener('click', bucket);
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
