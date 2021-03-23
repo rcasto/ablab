@@ -24,6 +24,16 @@
     "start:server": "http-server -p 3000 ./"
   },
   "author": "Richie Casto (https://github.com/rcasto)",
+  "homepage": "https://github.com/rcasto/ablab#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rcasto/ablab.git"
+  },
+  "keywords": [
+    "experimentation",
+    "ab-testing",
+    "feature-flags"
+  ],
   "license": "MIT",
   "dependencies": {
     "murmurhash": "2.0.0"
