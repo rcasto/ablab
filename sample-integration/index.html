@@ -14,7 +14,7 @@
             fetch('sample-experiment-config.json')
                 .then(response => response.json())
                 .then(experimentConfig => {
-                    const experimenter = Lab.createExperimenter(experimentConfig);
+                    const experimenter = ablab.createExperimenter(experimentConfig);
                     const variationResult = experimenter.getVariationForExperiment('changing the button color', '');
 
                     console.log(variationResult);

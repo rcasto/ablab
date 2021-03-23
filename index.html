@@ -47,7 +47,7 @@
     <div class="shipped-experiment"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuidv4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/iife/lab.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ablab@0.0.2/dist/iife/ablab.js"></script>
     <script>
         // ablab stuff
         const experimentConfig = {
@@ -104,7 +104,7 @@
                 }
             }
         };
-        const experimenter = Lab.createExperimenter(experimentConfig);
+        const experimenter = ablab.createExperimenter(experimentConfig);
 
         // dom elements
         const uniqueIdTextInput = document.getElementById('uniqueId-input');
