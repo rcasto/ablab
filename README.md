@@ -3,11 +3,101 @@ A simple library for enabling experimentation.
 
 This library primarily offers experiment bucketing and defines a schema for experiments using a JSON based config.
 
-## Usage
-Work in progress...
-## Experiment Schema
-Work in progress...
+![ablab sample gif](./ablab-example.gif)
 
+## Usage
+
+### CommonJS (CJS)
+```javascript
+const ablab = require('ablab');
+```
+
+Example:  
+https://runkit.com/rcasto/60594414fd115c00131ebeee
+
+### ES
+```javascript
+import { createExperimenter } from 'ablab';
+```
+
+or
+
+```html
+    <script type="module">
+        // may want to do dynamic import with this approach instead
+        import { createExperimenter } from 'https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/es/lab.js';
+    </script>
+
+```
+
+`type="module"` script variant has same mechanics as IIFE or script tag example directly below.
+
+### IIFE / script tag
+```html
+<script src="https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/iife/lab.js"></script>
+```
+
+Example:  
+https://codepen.io/rcasto/pen/oNBNdON?editors=0010
+
+**Note:** Browser globabl is `ablab`
+## Experiment Schema
+```typescript
+interface VariationData {
+    [customKey: string]: any;
+}
+
+interface VariationSettingsObject {
+    traffic: number;
+    data?: VariationData;
+}
+
+declare type VariationSettings = number | VariationSettingsObject;
+
+interface ExperimentSettings {
+    inactive?: boolean;
+    variations: {
+        [variationName: string]: VariationSettings;
+    };
+}
+
+export interface ExperimentConfig {
+    [experimentName: string]: ExperimentSettings;
+}
+
+/**
+ * Example experiment config */
+/* 
+{
+    "changing the button color": {
+        "variations": {
+            "treatment": {
+                "traffic": 50,
+                "data": {
+                    "color": "yellow"
+                }
+            },
+            "control": {
+                "traffic": 50,
+                "data": {
+                    "color": "blue"
+                }
+            }
+        }
+    },
+
+    "make the animation slower": {
+        "variations": {
+            "treatment": 50,
+            "control": 50
+        }
+    }
+}
+*/
+```
+
+You can view the complete typings at:  
+https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/index.d.ts
 ## Scope of this project
 Configuration should support:
 - Multiple experiments
