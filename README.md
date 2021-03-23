@@ -25,7 +25,7 @@ or
 ```html
     <script type="module">
         // may want to do dynamic import with this approach instead
-        import { createExperimenter } from 'https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/es/lab.js';
+        import { createExperimenter } from 'https://cdn.jsdelivr.net/npm/ablab@0.0.2/dist/es/ablab.js';
     </script>
 
 ```
@@ -34,7 +34,7 @@ or
 
 ### IIFE / script tag
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/iife/lab.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ablab@0.0.2/dist/iife/ablab.js"></script>
 ```
 
 Example:  
@@ -97,7 +97,7 @@ export interface ExperimentConfig {
 ```
 
 You can view the complete typings at:  
-https://cdn.jsdelivr.net/npm/ablab@0.0.1/dist/index.d.ts
+https://cdn.jsdelivr.net/npm/ablab@0.0.2/dist/index.d.ts
 ## Scope of this project
 Configuration should support:
 - Multiple experiments
