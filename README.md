@@ -6,7 +6,41 @@ This library primarily offers experiment bucketing and defines a schema for expe
 ![ablab sample gif](./ablab-example.gif)
 
 ## Usage
+```javascript
+import { createExperimenter } from 'ablab';
 
+const experimentConfig = {
+  "changing the button color": {
+    variations: {
+      treatment: {
+        traffic: 50,
+        data: {
+          color: "yellow",
+          textColor: "black"
+        }
+      },
+      control: {
+        traffic: 50,
+        data: {
+          color: "blue",
+          textColor: "white"
+        }
+      }
+    }
+  }
+};
+
+const experimenter = createExperimenter(experimentConfig);
+const uniqueIdVariationAssignments = experimenter.getVariationsForUniqueId(
+    uniqueIdTextInput.value
+);
+const buttonColorExperimentAssignment = experimenter.getVariationForExperiment('changing the button color', 'unique-id');
+
+console.log(uniqueIdVariationAssignments);
+console.log(buttonColorExperimentAssignment);
+```
+
+## Integration Paths
 ### CommonJS (CJS)
 ```javascript
 const ablab = require('ablab');
