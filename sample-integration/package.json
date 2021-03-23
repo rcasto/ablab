@@ -16,6 +16,6 @@
     "http-server": "0.12.3"
   },
   "dependencies": {
-    "ablab": "file:../ablab-0.0.1.tgz"
+    "ablab": "file:../ablab-0.0.2.tgz"
   }
 }
