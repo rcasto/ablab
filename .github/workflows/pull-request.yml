@@ -1,11 +1,13 @@
-name: build-test-and-publish
-
+name: pull-request
+ 
 on:
   push:
-    branches: [ main ]
+    branches-ignore: [ main ]
+
+  workflow_dispatch:
 
 jobs:
-  build-test-and-publish:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,8 +20,3 @@ jobs:
 
       - name: Run build script
         run: npm run build
-
-      - name: Publish npm package, if version is new
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_ACCESS_TOKEN }}
