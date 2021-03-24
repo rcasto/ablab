@@ -1,4 +1,4 @@
-# ablab
+# ablab [![build-test-and-publish](https://github.com/rcasto/ablab/actions/workflows/main-branch.yml/badge.svg?branch=main)](https://github.com/rcasto/ablab/actions/workflows/main-branch.yml)
 A simple library for enabling experimentation.
 
 This library primarily offers experiment bucketing and defines a schema for experiments using a JSON based config.
