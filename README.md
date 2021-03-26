@@ -90,7 +90,7 @@ or
 ```html
     <script type="module">
         // may want to do dynamic import with this approach instead
-        import { createExperimenter } from 'https://cdn.jsdelivr.net/npm/ablab@0.0.4/dist/es/ablab.js';
+        import { createExperimenter } from 'https://cdn.jsdelivr.net/npm/ablab@0.0.5/dist/es/ablab.js';
     </script>
 
 ```
@@ -99,7 +99,7 @@ or
 
 ### IIFE / script tag
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ablab@0.0.4/dist/iife/ablab.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ablab@0.0.5/dist/iife/ablab.min.js"></script>
 ```
 
 Example:  
@@ -200,7 +200,7 @@ The API for this libary then gives you the ability to validate this experiment c
 An "experimenter" is simply an instance that retains your experiment config internally and allows you to then get the assigned variation for an experiment or all experiments tied to a particular unique id that you provide. This unique id can represent anything you want it to, such as a user id, or just completely random, whatever.
 
 **Note:** You can view the complete raw typings at:  
-https://cdn.jsdelivr.net/npm/ablab@0.0.4/dist/index.d.ts
+https://cdn.jsdelivr.net/npm/ablab@0.0.5/dist/index.d.ts
 ## Scope of this project
 Configuration should support:
 - Multiple experiments
