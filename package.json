@@ -1,6 +1,6 @@
 {
   "name": "ablab",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple library for enabling experimentation.",
   "type": "module",
   "main": "./dist/cjs/ablab.js",
