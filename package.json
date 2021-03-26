@@ -20,6 +20,7 @@
     "prepack": "npm-run-all build",
     "prepublishOnly": "npm test",
     "clean": "rimraf dist lab-*.tgz",
+    "clean:deps": "rimraf node_modules",
     "test": "jest",
     "start:server": "http-server -p 3000 ./"
   },
