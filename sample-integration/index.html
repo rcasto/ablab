@@ -1,10 +1,12 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lab - Browser Sample</title>
 </head>
+
 <body>
     <h1>Check the browser console</h1>
 
@@ -15,9 +17,11 @@
                 .then(response => response.json())
                 .then(experimentConfig => {
                     const experimenter = ablab.createExperimenter(experimentConfig);
-                    const variationResult = experimenter.getVariationForExperiment('changing the button color', '');
-
-                    console.log(variationResult);
+                    const buttonColorExperimentAssignment = experimenter.getVariationForExperiment('changing the button color', 'unique-id');
+                    const uniqueIdVariationAssignments = experimenter.getVariationsForUniqueId('unique-id');
+                    
+                    console.log(JSON.stringify(uniqueIdVariationAssignments, null, '\t'));
+                    console.log(JSON.stringify(buttonColorExperimentAssignment, null, '\t'));
                 })
                 .catch(console.error);
         }
@@ -25,4 +29,5 @@
         window.addEventListener('load', init);
     </script>
 </body>
+
 </html>
